@@ -31,7 +31,7 @@ export default function LoginPage() {
           </CardHeader>
 
           <CardContent>
-            <form action={loginAction} method="post" className="space-y-5">
+            <form action={loginAction} className="space-y-5">
               <div className="space-y-2">
                 <Label>Email</Label>
                 <Input

@@ -55,3 +55,14 @@ export async function loginAction(formData: FormData) {
 
   redirect("/")
 }
+
+export async function logoutAction() {
+  const { auth } = await createClient()
+
+  const { error } = await auth.signOut()
+
+  if (error) {
+    console.error(error.message)
+    throw new Error(error.message)
+  }
+}

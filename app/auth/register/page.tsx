@@ -31,7 +31,7 @@ export default function RegisterPage() {
           </CardHeader>
 
           <CardContent>
-            <form action={registerAction} method="post" className="space-y-5">
+            <form action={registerAction} className="space-y-5">
               <div className="space-y-2">
                 <Label>Email</Label>
                 <Input
