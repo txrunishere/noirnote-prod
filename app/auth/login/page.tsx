@@ -9,12 +9,12 @@ import {
   CardDescription,
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { loginAction } from "@/lib/actions"
 
 export default function LoginPage() {
   return (
     <div className="flex justify-center px-4 py-16">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="mb-6 text-center">
           <h1 className="text-3xl font-bold">NoirNote.</h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -31,7 +31,7 @@ export default function LoginPage() {
           </CardHeader>
 
           <CardContent>
-            <form action="/auth/login" method="post" className="space-y-5">
+            <form action={loginAction} method="post" className="space-y-5">
               <div className="space-y-2">
                 <Label>Email</Label>
                 <Input
