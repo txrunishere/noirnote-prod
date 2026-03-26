@@ -6,6 +6,11 @@ import prisma from "./prisma"
 import { getUser } from "./api"
 import { revalidatePath } from "next/cache"
 
+type ActionResponse = {
+  success: boolean
+  message?: string
+}
+
 export async function registerAction(formData: FormData) {
   const supabase = await createClient()
 
@@ -69,7 +74,10 @@ export async function logoutAction() {
   }
 }
 
-export async function createNoteAction(title: string, content: string) {
+export async function createNoteAction(
+  title: string,
+  content: string
+): Promise<ActionResponse> {
   if (!title || !content) {
     return {
       success: false,
@@ -105,4 +113,61 @@ export async function createNoteAction(title: string, content: string) {
 
   revalidatePath("/")
   return { success: true }
+}
+
+export async function updateNotePinAction(
+  noteId: string,
+  pinStatus: boolean
+): Promise<ActionResponse> {
+  try {
+    if (pinStatus) {
+      await prisma.note.update({
+        where: {
+          id: noteId,
+        },
+        data: {
+          isPinned: false,
+        },
+      })
+    } else {
+      await prisma.note.update({
+        where: {
+          id: noteId,
+        },
+        data: {
+          isPinned: true,
+        },
+      })
+    }
+
+    revalidatePath("/")
+    return { success: true }
+  } catch (error) {
+    return {
+      success: false,
+      message: "Something went wrong while updating note!",
+    }
+  }
+}
+
+export async function deleteNoteAction(
+  noteId: string
+): Promise<ActionResponse> {
+  try {
+    await prisma.note.delete({
+      where: {
+        id: noteId,
+      },
+    })
+
+    revalidatePath("/")
+    return {
+      success: true,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: "Something went wrong while deleting note!",
+    }
+  }
 }
