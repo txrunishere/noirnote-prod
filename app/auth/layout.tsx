@@ -7,7 +7,7 @@ export default function authLayout({
 }) {
   return (
     <>
-      <Header />
+      <Header layout="auth" />
       {children}
     </>
   )
