@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { getUser } from "@/lib/api"
 import { LogoutButton } from "./logout-button"
+import { SidebarTrigger } from "./ui/sidebar"
 
 export default async function Header() {
   const user = await getUser()
@@ -9,9 +10,12 @@ export default async function Header() {
   return (
     <header className="w-full border-b bg-background px-4 py-3">
       <div className="flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold">
-          NoirNote.
-        </Link>
+        <div className="flex items-center space-x-2">
+          <SidebarTrigger size={"lg"} />
+          <Link href="/" className="text-xl font-bold">
+            NoirNote.
+          </Link>
+        </div>
 
         <div className="flex items-center gap-3">
           {user ? (
