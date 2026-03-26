@@ -22,13 +22,13 @@ export default async function Header({ layout }: { layout: "root" | "auth" }) {
             <LogoutButton />
           ) : (
             <>
-              <Link href="/auth/login">
-                <Button variant="ghost">Login</Button>
-              </Link>
+              <Button variant="ghost" asChild>
+                <Link href="/auth/login">Login</Link>
+              </Button>
 
-              <Link href="/auth/register">
-                <Button>Register</Button>
-              </Link>
+              <Button asChild>
+                <Link href="/auth/register">Register</Link>
+              </Button>
             </>
           )}
         </div>
