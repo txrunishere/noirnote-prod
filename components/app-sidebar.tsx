@@ -56,16 +56,20 @@ export async function AppSidebar() {
         {pinnedNotes.length > 0 && (
           <SidebarGroup>
             <SidebarGroupLabel>Pinned Notes</SidebarGroupLabel>
-            {pinnedNotes.map((note) => (
-              <NoteItem key={note.id} note={note} />
-            ))}
+            <div className="space-y-2">
+              {pinnedNotes.map((note) => (
+                <NoteItem key={note.id} note={note} />
+              ))}
+            </div>
           </SidebarGroup>
         )}
         <SidebarGroup>
           <SidebarGroupLabel>All Notes</SidebarGroupLabel>
-          {otherNotes.map((note) => (
-            <NoteItem key={note.id} note={note} />
-          ))}
+          <div className="space-y-2">
+            {otherNotes.map((note) => (
+              <NoteItem key={note.id} note={note} />
+            ))}
+          </div>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>

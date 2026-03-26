@@ -3,6 +3,8 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 import prisma from "./prisma"
+import { getUser } from "./api"
+import { revalidatePath } from "next/cache"
 
 export async function registerAction(formData: FormData) {
   const supabase = await createClient()
@@ -65,4 +67,42 @@ export async function logoutAction() {
     console.error(error.message)
     throw new Error(error.message)
   }
+}
+
+export async function createNoteAction(title: string, content: string) {
+  if (!title || !content) {
+    return {
+      success: false,
+      message: "Title and content are required!",
+    }
+  }
+
+  const user = await getUser()
+
+  if (!user) {
+    return {
+      success: false,
+      message: "User not found!",
+    }
+  }
+
+  try {
+    await prisma.note.create({
+      data: {
+        content,
+        title,
+        authorId: user.id,
+      },
+    })
+  } catch (error) {
+    console.error("Create Note Error:", error)
+
+    return {
+      success: false,
+      message: "Something went wrong while creating note!",
+    }
+  }
+
+  revalidatePath("/")
+  return { success: true }
 }
