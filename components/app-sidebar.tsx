@@ -37,7 +37,7 @@ export async function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="pt-10">
+      <SidebarHeader className="pt-6">
         <h1 className="ml-4 text-xl font-semibold">Your Notes</h1>
       </SidebarHeader>
       <SidebarContent className="mx-2 mt-2">
