@@ -232,7 +232,7 @@ export async function rewriteNoteAction(
       You are a professional editor. Your job is to rewrite the note below so it is clear, concise, and grammatically correct.
 
       Rules:
-      - Preserve every fact and idea from the original — do not add, invent, or remove information.
+      - Preserve every fact and idea from the original - do not add, invent, or remove information.
       - Fix grammar, spelling, punctuation, and awkward phrasing.
       - Use plain prose. Do NOT use markdown, bullet points, headers, or any special formatting.
       - Match the original language and tone (casual stays casual, formal stays formal).
@@ -265,7 +265,7 @@ export async function summarizeNoteAction(
       You are a precise summarizer. Read the note below and produce a concise summary.
 
       Rules:
-      - Capture every key point, decision, or action item — nothing important should be lost.
+      - Capture every key point, decision, or action item - nothing important should be lost.
       - Be brief: aim for 20–40% of the original length.
       - Write in plain prose. Do NOT use markdown, bullet points, headers, or any special formatting.
       - Return only the summary. No preamble, no explanation.
