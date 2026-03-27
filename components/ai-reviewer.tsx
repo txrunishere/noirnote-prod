@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
-import { Sparkles, RefreshCw, Loader2, AlertCircle } from "lucide-react"
+import { Sparkles, RefreshCw, Loader2 } from "lucide-react"
 import { Note } from "@/generated/prisma/browser"
 import { toast } from "sonner"
 import {
@@ -13,6 +13,7 @@ import {
   summarizeNoteAction,
   askOnSummaryAction,
   type ActionResult,
+  updateNoteContentAction,
 } from "@/lib/actions"
 
 type Mode = "none" | "rewrite" | "summary"
@@ -25,16 +26,12 @@ export const AiReviewer = ({ note }: { note: Note }) => {
   const [summary, setSummary] = useState("")
   const [question, setQuestion] = useState("")
   const [answer, setAnswer] = useState("")
-  const [error, setError] = useState<string | null>(null)
 
   const [mode, setMode] = useState<Mode>("none")
   const [pendingMode, setPendingMode] = useState<Mode>("none")
   const [isPending, startTransition] = useTransition()
 
-  const clearError = () => setError(null)
-
   const handleRewrite = () => {
-    clearError()
     setPendingMode("rewrite")
     setMode("rewrite")
 
@@ -48,7 +45,6 @@ export const AiReviewer = ({ note }: { note: Note }) => {
         setAiContent(res.data)
         toast.success("Note rewritten — review it below.", { id: toastId })
       } else {
-        setError(res.message)
         setMode("none")
         toast.error(res.message, { id: toastId })
       }
@@ -56,7 +52,6 @@ export const AiReviewer = ({ note }: { note: Note }) => {
   }
 
   const handleSummarize = () => {
-    clearError()
     setAnswer("")
     setPendingMode("summary")
     setMode("summary")
@@ -71,7 +66,6 @@ export const AiReviewer = ({ note }: { note: Note }) => {
         setSummary(res.data)
         toast.success("Summary ready.", { id: toastId })
       } else {
-        setError(res.message)
         setMode("none")
         toast.error(res.message, { id: toastId })
       }
@@ -82,20 +76,28 @@ export const AiReviewer = ({ note }: { note: Note }) => {
     setContent(originalContent.current)
     setAiContent("")
     setMode("none")
-    clearError()
     toast.info("Rewrite discarded.")
   }
 
   const handleConfirmRewrite = () => {
-    setContent(aiContent)
-    originalContent.current = aiContent
-    setAiContent("")
-    setMode("none")
-    toast.success("Changes applied to your note.")
+    const toastId = toast.loading("Saving changes…")
+
+    startTransition(async () => {
+      const res = await updateNoteContentAction(note.id, aiContent)
+
+      if (res.success) {
+        setContent(aiContent)
+        originalContent.current = aiContent
+        setAiContent("")
+        setMode("none")
+        toast.success("Changes saved.", { id: toastId })
+      } else {
+        toast.error(res.message, { id: toastId })
+      }
+    })
   }
 
   const handleAsk = () => {
-    clearError()
     setAnswer("")
 
     const toastId = toast.loading("Thinking…")
@@ -107,7 +109,6 @@ export const AiReviewer = ({ note }: { note: Note }) => {
         setAnswer(res.data)
         toast.success("Answer ready.", { id: toastId })
       } else {
-        setError(res.message)
         toast.error(res.message, { id: toastId })
       }
     })
@@ -121,16 +122,6 @@ export const AiReviewer = ({ note }: { note: Note }) => {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4">
-      {error && (
-        <div className="flex items-center gap-2 rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>{error}</span>
-          <Button onClick={clearError} className="ml-auto text-xs underline">
-            Dismiss
-          </Button>
-        </div>
-      )}
-
       <Card className="rounded-3xl border bg-linear-to-br from-background to-muted/40 shadow-xl">
         <CardHeader>
           <CardTitle className="text-2xl font-bold tracking-tight">
@@ -194,7 +185,9 @@ export const AiReviewer = ({ note }: { note: Note }) => {
               <Button variant="outline" onClick={handleCancelRewrite}>
                 Discard
               </Button>
-              <Button onClick={handleConfirmRewrite}>Accept Changes</Button>
+              <Button onClick={handleConfirmRewrite} disabled={isPending}>
+                Accept Changes
+              </Button>
             </div>
           </CardContent>
         </Card>

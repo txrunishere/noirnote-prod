@@ -177,6 +177,36 @@ export async function deleteNoteAction(
   }
 }
 
+export async function updateNoteContentAction(
+  noteId: string,
+  content: string
+): Promise<{ success: true } | { success: false; message: string }> {
+  try {
+    await prisma.note.update({
+      where: {
+        id: noteId,
+      },
+      data: {
+        content,
+      },
+    })
+
+    return { success: true }
+  } catch (error) {
+    if (error instanceof Error) {
+      return {
+        success: false,
+        message: error.message,
+      }
+    }
+
+    return {
+      message: "Something went wrong while updating note's content!",
+      success: false,
+    }
+  }
+}
+
 function cleanText(text: string): string {
   return text
     .replace(/```[\s\S]*?```/g, "")
