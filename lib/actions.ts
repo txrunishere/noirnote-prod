@@ -245,7 +245,7 @@ function handleError(error: unknown, label: string): ActionResult {
 
 async function callGemini(prompt: string): Promise<string> {
   const result = await genAI.models.generateContent({
-    model: "gemini-2.0-flash",
+    model: "gemini-3-flash-preview",
     contents: prompt,
   })
   return cleanText(result.text || "")

@@ -1,5 +1,7 @@
 import { AiReviewer } from "@/components/ai-reviewer"
+import { AiReviewerShimmer } from "@/components/ai-reviewer-shimmer"
 import prisma from "@/lib/prisma"
+import { Suspense } from "react"
 
 export default async function AiNotePage({
   params,
@@ -22,5 +24,9 @@ export default async function AiNotePage({
     )
   }
 
-  return <AiReviewer note={note} />
+  return (
+    <Suspense fallback={<AiReviewerShimmer />}>
+      <AiReviewer note={note} />
+    </Suspense>
+  )
 }
